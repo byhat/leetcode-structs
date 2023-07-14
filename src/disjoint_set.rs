@@ -15,18 +15,26 @@ impl DisjointSet {
     }
 
     pub fn init(&mut self, e: usize) {
-        if e >= self.parents.len() { return; }
-        if self.parents[e].is_some() { return; } // already initialized
+        if e >= self.parents.len() {
+            return;
+        }
+        if self.parents[e].is_some() {
+            return;
+        } // already initialized
 
         self.parents[e] = Some(e);
         self.ids.insert(e); // new representative
     }
 
     pub fn find(&mut self, e: usize) -> Option<usize> {
-        if e >= self.parents.len() { return None; }
+        if e >= self.parents.len() {
+            return None;
+        }
 
         let parent = self.parents[e]?; // uninitialized
-        if parent == e { return Some(e); } // self-representative
+        if parent == e {
+            return Some(e);
+        } // self-representative
 
         let ret = self.find(parent)?;
         self.parents[e] = Some(ret); // path compression
@@ -37,7 +45,9 @@ impl DisjointSet {
     pub fn link(&mut self, e0: usize, e1: usize) {
         if let Some(p0) = self.find(e0) {
             if let Some(p1) = self.find(e1) {
-                if p0 == p1 { return; } // already linked
+                if p0 == p1 {
+                    return;
+                } // already linked
 
                 // p1 is no longer a representative
                 self.ids.remove(&p1);
@@ -46,7 +56,9 @@ impl DisjointSet {
         }
     }
 
-    pub fn len(&self) -> usize { self.ids.len() }
+    pub fn len(&self) -> usize {
+        self.ids.len()
+    }
 }
 
 #[cfg(test)]

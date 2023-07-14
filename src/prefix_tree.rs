@@ -14,8 +14,7 @@ impl Node {
             return;
         }; // default case
 
-        let mut self_next = self.children.remove(&c)
-            .unwrap_or(Node::default());
+        let mut self_next = self.children.remove(&c).unwrap_or(Node::default());
         self_next.push(word);
 
         self.children.insert(c, self_next);

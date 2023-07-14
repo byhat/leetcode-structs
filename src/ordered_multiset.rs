@@ -1,5 +1,5 @@
-use std::collections::BTreeMap;
 use std::cmp::Ord;
+use std::collections::BTreeMap;
 
 #[derive(Default, Debug)]
 pub struct MultiSet<T> {
@@ -9,7 +9,8 @@ pub struct MultiSet<T> {
 
 impl<T: Ord + Copy> MultiSet<T> {
     pub fn insert(&mut self, val: T) {
-        self.inner.entry(val)
+        self.inner
+            .entry(val)
             .and_modify(|count| *count += 1)
             .or_insert(1);
         self.count += 1;
@@ -17,7 +18,9 @@ impl<T: Ord + Copy> MultiSet<T> {
 
     pub fn remove(&mut self, val: &T) -> bool {
         let count = self.inner.remove(val).unwrap_or(0);
-        if count < 1 { return false; }
+        if count < 1 {
+            return false;
+        }
         if count > 1 {
             self.inner.insert(*val, count - 1);
         }
@@ -29,7 +32,6 @@ impl<T: Ord + Copy> MultiSet<T> {
     pub fn first(&self) -> Option<T> {
         self.inner.iter().next().map(|(k, _)| *k)
     }
-
     pub fn last(&self) -> Option<T> {
         self.inner.iter().next_back().map(|(k, _)| *k)
     }
@@ -48,5 +50,7 @@ impl<T: Ord + Copy> MultiSet<T> {
         Some(e)
     }
 
-    pub fn len(&self) -> usize { self.count }
+    pub fn len(&self) -> usize {
+        self.count
+    }
 }
