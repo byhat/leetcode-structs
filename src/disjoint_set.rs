@@ -1,17 +1,14 @@
-use std::collections::HashSet;
-
 #[derive(Debug)]
 pub struct DisjointSet {
-    ids: HashSet<usize>,
     parents: Vec<Option<usize>>,
+    count: usize,
 }
 
 impl DisjointSet {
     pub fn new(n: usize) -> Self {
-        let ids = HashSet::new();
         let parents = vec![None; n];
 
-        Self { ids, parents }
+        Self { parents, count: 0 }
     }
 
     pub fn init(&mut self, e: usize) {
@@ -23,7 +20,7 @@ impl DisjointSet {
         } // already initialized
 
         self.parents[e] = Some(e);
-        self.ids.insert(e); // new representative
+        self.count += 1; // new representative
     }
 
     pub fn find(&mut self, e: usize) -> Option<usize> {
@@ -50,14 +47,14 @@ impl DisjointSet {
                 } // already linked
 
                 // p1 is no longer a representative
-                self.ids.remove(&p1);
                 self.parents[p1] = Some(p0);
+                self.count -= 1;
             }
         }
     }
 
     pub fn len(&self) -> usize {
-        self.ids.len()
+        self.count
     }
 }
 
