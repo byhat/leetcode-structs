@@ -1,4 +1,4 @@
-use super::{Memo, Solver};
+use crate::dp::{Memo, Solver};
 
 pub struct InDegree {
     vec: Vec<Vec<usize>>,
