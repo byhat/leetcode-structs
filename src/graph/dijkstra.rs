@@ -4,6 +4,10 @@ use std::collections::BinaryHeap;
 // Given a weighted directed graph,
 //   returns the minimum distances from `src` to
 //   every vertices in the graph.
+// Parameters:
+//   `graph`: adjacency list for the graph
+//   `src`: source vertex
+//   `n`: number of vertices
 pub fn dijkstra(graph: Vec<Vec<(usize, u32)>>, src: usize, n: usize) -> Vec<Option<u64>> {
     assert!(src < n, "source vertex outside graph");
 
