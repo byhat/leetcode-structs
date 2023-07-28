@@ -1,3 +1,4 @@
+mod binary_search;
 mod disjoint_set;
 mod dp;
 mod graph;

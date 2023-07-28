@@ -29,6 +29,10 @@ impl<T: Ord + Copy> MultiSet<T> {
         true
     }
 
+    pub fn contains(&self, val: &T) -> bool {
+        self.inner.contains_key(val)
+    }
+
     pub fn first(&self) -> Option<T> {
         self.inner.iter().next().map(|(k, _)| *k)
     }
