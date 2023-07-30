@@ -1,6 +1,7 @@
 #[derive(Debug)]
 pub struct DisjointSet {
-    parents: Vec<Option<usize>>,
+    parents: Vec<Option<(usize, usize)>>,
+
     count: usize,
 }
 
@@ -19,35 +20,36 @@ impl DisjointSet {
             return;
         } // already initialized
 
-        self.parents[e] = Some(e);
+        self.parents[e] = Some((e, 1));
         self.count += 1; // new representative
     }
 
-    pub fn find(&mut self, e: usize) -> Option<usize> {
+    pub fn query(&mut self, e: usize) -> Option<(usize, usize)> {
         if e >= self.parents.len() {
             return None;
         }
 
-        let parent = self.parents[e]?; // uninitialized
+        let (parent, rank) = self.parents[e]?; // uninitialized
         if parent == e {
-            return Some(e);
+            return Some((parent, rank));
         } // self-representative
 
-        let ret = self.find(parent)?;
-        self.parents[e] = Some(ret); // path compression
+        let (parent, rank) = self.query(parent)?;
+        self.parents[e] = Some((parent, rank)); // path compression
 
-        Some(ret)
+        Some((parent, rank))
     }
 
     pub fn link(&mut self, e0: usize, e1: usize) {
-        if let Some(p0) = self.find(e0) {
-            if let Some(p1) = self.find(e1) {
+        if let Some((p0, rank_0)) = self.query(e0) {
+            if let Some((p1, rank_1)) = self.query(e1) {
                 if p0 == p1 {
                     return;
                 } // already linked
 
                 // p1 is no longer a representative
-                self.parents[p1] = Some(p0);
+                self.parents[p0] = Some((p0, rank_0 + rank_1));
+                self.parents[p1] = Some((p0, rank_1));
                 self.count -= 1;
             }
         }
@@ -80,7 +82,7 @@ mod tests {
         const SET_LEN: usize = 8;
 
         let mut set = DisjointSet::new(SET_LEN);
-        assert!(set.find(2).is_none());
+        assert!(set.query(2).is_none());
     }
 
     #[test]
@@ -91,13 +93,13 @@ mod tests {
         for i in 0..SET_LEN {
             set.init(i);
         }
-        assert_eq!(set.find(2), Some(2));
+        assert_eq!(set.query(2), Some((2, 1)));
 
         set.link(1, 2);
-        assert_eq!(set.find(2), Some(1));
+        assert_eq!(set.query(2), Some((1, 2)));
 
         set.link(0, 2);
-        assert_eq!(set.find(1), Some(0));
+        assert_eq!(set.query(1), Some((0, 3)));
     }
 
     #[test]
