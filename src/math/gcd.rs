@@ -25,15 +25,11 @@ pub fn gcd_n_ary(vec: Vec<u32>) -> u32 {
         let nums_0 = heap.pop().unwrap(); // always exist
         let nums_1 = heap.pop().unwrap();
 
-        if nums_0 == nums_1 {
-            // found gcd of two elements
-            heap.push(nums_0);
-            continue;
-        }
-
         let (nums_0, nums_1) = (nums_0 - nums_1, nums_1);
 
-        heap.push(nums_0);
+        if nums_0 > 0 {
+            heap.push(nums_0);
+        }
         heap.push(nums_1);
     }
 
