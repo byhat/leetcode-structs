@@ -1,36 +1,51 @@
 use std::cmp::Ord;
-use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 
 #[derive(Default, Debug)]
 pub struct MultiSet<T> {
-    count: usize,
-    inner: BTreeMap<T, usize>,
+    inner: BTreeSet<(T, usize)>,
+
+    counter: usize,
 }
 
 impl<T: Ord + Copy> MultiSet<T> {
     pub fn insert(&mut self, val: T) {
-        self.inner
-            .entry(val)
-            .and_modify(|count| *count += 1)
-            .or_insert(1);
-        self.count += 1;
+        self.inner.insert((val, self.counter));
+        self.counter += 1;
     }
 
     pub fn remove(&mut self, val: &T) -> bool {
-        let count = self.inner.remove(val).unwrap_or(0);
-        if count < 1 {
+        let e = self.inner.range((*val, 0)..(*val, usize::MAX)).next();
+        let e = if let Some(inner) = e {
+            *inner
+        } else {
             return false;
-        }
-        if count > 1 {
-            self.inner.insert(*val, count - 1);
-        }
-        self.count -= 1;
+        };
+
+        self.inner.remove(&e);
 
         true
     }
 
+    pub fn remove_all(&mut self, val: &T) -> usize {
+        for i in usize::MIN..usize::MAX {
+            if !self.remove(val) {
+                return i;
+            }
+        }
+
+        unreachable!("usize overflowed??")
+    }
+
     pub fn contains(&self, val: &T) -> bool {
-        self.inner.contains_key(val)
+        self.inner
+            .range((*val, 0)..(*val, usize::MAX))
+            .next()
+            .is_some()
+    }
+
+    pub fn count_range(&self, l: &T, r: &T) -> usize {
+        self.inner.range((*l, usize::MIN)..(*r, usize::MIN)).count()
     }
 
     pub fn first(&self) -> Option<T> {
@@ -40,21 +55,7 @@ impl<T: Ord + Copy> MultiSet<T> {
         self.inner.iter().next_back().map(|(k, _)| *k)
     }
 
-    pub fn pop_first(&mut self) -> Option<T> {
-        let e = self.first()?;
-        self.remove(&e);
-
-        Some(e)
-    }
-
-    pub fn pop_last(&mut self) -> Option<T> {
-        let e = self.last()?;
-        self.remove(&e);
-
-        Some(e)
-    }
-
     pub fn len(&self) -> usize {
-        self.count
+        self.inner.len()
     }
 }
