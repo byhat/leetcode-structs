@@ -28,3 +28,25 @@ pub fn undirected_edges_to_graph(edges: Vec<Vec<i32>>, n: usize) -> Vec<Vec<(usi
     }
     ret
 }
+
+pub fn compress_vertices(edges: Vec<Vec<i32>>) -> (Vec<(usize, usize)>, Vec<i32>) {
+    let mut id_map = edges.clone().into_iter().flatten().collect::<Vec<_>>();
+    id_map.sort_unstable();
+    id_map.dedup();
+
+    let edges = edges
+        .into_iter()
+        .map(|v| {
+            v.into_iter()
+                .map(|e| id_map.binary_search(&e).unwrap())
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
+    let edges = edges
+        .into_iter()
+        .filter(|v| v.len() == 2)
+        .map(|v| (v[0], v[1]))
+        .collect();
+
+    (edges, id_map)
+}
