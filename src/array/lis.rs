@@ -1,4 +1,4 @@
-pub fn longest_increasing_subsequence(vec: Vec<i32>) -> i32 {
+pub fn longest_increasing_subsequence(vec: Vec<i32>) -> usize {
     let mut stack = vec![]; // monotonic stack
     for e in vec {
         let e_max = if let Some(inner) = stack.last() {
@@ -17,5 +17,5 @@ pub fn longest_increasing_subsequence(vec: Vec<i32>) -> i32 {
         stack[ptr] = e;
     }
 
-    stack.len() as i32
+    stack.len()
 }
