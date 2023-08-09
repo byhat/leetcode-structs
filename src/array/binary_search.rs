@@ -15,7 +15,7 @@ pub fn partition_point<P: FnMut(usize) -> bool + Copy>(
         return p0;
     }
 
-    let p_decision = (p0 + p1) / 2;
+    let p_decision = p0 + (p1 - p0) / 2;
     let (p0_next, p1_next) = if predicate(p_decision) {
         (p_decision + 1, p1)
     } else {
