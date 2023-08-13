@@ -1,3 +1,9 @@
+// A rolling hasher.
+// Hashes are computed with
+//   $$hash = \sum_{i=0}^{n} c_i p^i \mod m$$
+//
+// For the rolling hasher used in Rabin–Karp search algorithm,
+//   use RollingHasher::push_front() for appending each new token.
 #[derive(Debug, Clone)]
 pub struct RollingHasher {
     p: u64,
