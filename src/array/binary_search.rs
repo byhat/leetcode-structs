@@ -6,11 +6,7 @@
 //   making it O(\log n) space-wise.
 //
 // This is especially useful when searching across a large solution space.
-pub fn partition_point<P: FnMut(usize) -> bool + Copy>(
-    p0: usize,
-    p1: usize,
-    mut predicate: P,
-) -> usize {
+pub fn partition_point<P: FnMut(usize) -> bool>(p0: usize, p1: usize, mut predicate: P) -> usize {
     if p0 >= p1 {
         return p0;
     }
