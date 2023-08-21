@@ -21,6 +21,7 @@ pub fn partition_point<P: FnMut(usize) -> bool>(p0: usize, p1: usize, mut predic
     partition_point(p0_next, p1_next, predicate) // tail recursion
 }
 
+// Floating-point version of `partition_point()`.
 pub fn partition_point_fp<P: FnMut(f64) -> bool>(p0: f64, p1: f64, mut predicate: P) -> f64 {
     const EP: f64 = 0.0000001;
 
