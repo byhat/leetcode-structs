@@ -27,11 +27,9 @@ impl Solver<usize, usize> for InDegree {
     }
 }
 
-use std::collections::VecDeque;
-
 // Given a DAG and its adjacency list,
 //   returns the vertices sorted in topological order.
-pub fn kahn(graph: Vec<Vec<usize>>) -> Vec<usize> {
+pub fn topo_sort_kahn(graph: Vec<Vec<usize>>) -> Vec<Vec<usize>> {
     let n = graph.len();
 
     let mut indeg_vec = vec![usize::MIN; n];
@@ -43,21 +41,27 @@ pub fn kahn(graph: Vec<Vec<usize>>) -> Vec<usize> {
 
     let mut ret = vec![];
 
-    let mut queue = indeg_vec
-        .iter()
-        .enumerate()
-        .filter(|&(_, &e)| e < 1)
-        .map(|(i, _)| i)
-        .collect::<VecDeque<_>>();
-    while let Some(v) = queue.pop_front() {
-        ret.push(v);
+    let mut breadth = vec![];
+    for (v, &indeg) in indeg_vec.iter().enumerate() {
+        if indeg > 0 {
+            continue;
+        }
+        breadth.push(v);
+    }
+    while !breadth.is_empty() {
+        ret.push(breadth.clone());
 
-        for &v_next in &graph[v] {
-            indeg_vec[v_next] -= 1;
-            if indeg_vec[v_next] < 1 {
-                queue.push_back(v_next);
+        let mut breadth_next = vec![];
+        for v in breadth {
+            for &v_next in &graph[v] {
+                indeg_vec[v_next] -= 1;
+                if indeg_vec[v_next] > 0 {
+                    continue;
+                }
+                breadth_next.push(v_next);
             }
         }
+        breadth = breadth_next;
     }
 
     ret
