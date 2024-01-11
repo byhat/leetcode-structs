@@ -1,4 +1,4 @@
-# leetcode-structs
+# org-codesnip/rust
 
 This repo contains useful data structures for LeetCode (or anything, really).
 This includes
